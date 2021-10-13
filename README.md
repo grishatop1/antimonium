@@ -1,2 +1,3 @@
 # antimonium
-antimonium - a python launcher, lets you run easily your desktop applications
+
+antimonium - A launcher which lets you easily run your desktop applications from one shortcut!
