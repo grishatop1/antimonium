@@ -1,10 +1,14 @@
 from tkinter import *
 from tkinter.ttk import *
 
+from ttkbootstrap import Style
+
 class GUI(Tk):
     def __init__(self, app) -> None:
         super().__init__("Antimonium")
         self.app = app
+
+        style = Style("darkly")
 
         self.title("Antimonium")
         self.resizable(False, False)
@@ -24,7 +28,7 @@ class LeftFrame(Frame):
         self.sort_btn = Button(self, text="Sort A-Z")
         self.app_list = Listbox(self, width=35, height=25)
 
-        self.sort_btn.grid(row=0, column=0)
+        self.sort_btn.grid(row=0, column=0, pady=(1,2))
         self.app_list.grid(row=1, column=0)
 
 class RightFrame(Frame):
@@ -43,15 +47,15 @@ class OptionsFrame(Frame):
     def __init__(self, parent, *args, **kwargs):
         Frame.__init__(self, parent, *args, **kwargs)
 
-        self.grid_rowconfigure(0, minsize=23)
+        self.grid_rowconfigure(0, minsize=31)
 
         self.add_btn = Button(self, text="Add a program", width=25)
         self.rename_btn = Button(self, text="Rename")
         self.remove_btn = Button(self, text="Remove")
 
-        self.add_btn.grid(row=1, column=0, sticky="ew")
-        self.rename_btn.grid(row=2, column=0, sticky="ew")
-        self.remove_btn.grid(row=3, column=0, sticky="ew")
+        self.add_btn.grid(row=1, column=0, sticky="ew", pady=1)
+        self.rename_btn.grid(row=2, column=0, sticky="ew", pady=1)
+        self.remove_btn.grid(row=3, column=0, sticky="ew", pady=1)
 
 class InfoFrame(LabelFrame):
     def __init__(self, parent, *args, **kwargs):
@@ -74,5 +78,5 @@ class StartFrame(Frame):
         self.close_check = Checkbutton(self, text="Close antimonium")
         self.start_btn = Button(self, text="START", width=30)
 
-        self.close_check.grid(row=0, column=0)
+        self.close_check.grid(row=0, column=0, sticky="w", pady=5)
         self.start_btn.grid(row=1, column=0, sticky="ew", ipady=5)
