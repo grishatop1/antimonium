@@ -21,7 +21,7 @@ class AppManager:
         for app_item in app_items:
             app_list.append(app_item.labelname + app_item.suffix)
 
-        app_sort = self.sortList(app_list)
+        app_sort = self.sortList(app_list, app_items)
 
         self.list.updateList(
             app_sort
@@ -31,33 +31,45 @@ class AppManager:
         self.currentSort = _sort
         self.updateList()
 
-    def sortList(self, app_list):
+    def sortList(self, app_list, app_items):
         if self.currentSort == "a-z":
             return sorted(app_list)
         elif self.currentSort == "z-a":
             return sorted(app_list, reverse=True)
+        elif self.currentSort == "date":
+            item_dict = {}
+            sort_list = []
+            for _item in app_items:
+                item_dict[_item.labelname + _item.suffix] = _item.time_added
+
+            for w in sorted(item_dict, key=item_dict.get, reverse=True):
+                sort_list.append(w)
+
+            return sort_list
+            
 
     def saveToCache(self):
         output = {}
         for label_name, obj in self.programs.items():
-            output[label_name] = obj.filepath
+            output[label_name] = [obj.filepath, obj.time_added]
 
         self.app.cache.write("apps", output)
 
     def loadFromCache(self):
         data = self.app.cache.read("apps")
-        for label_name, filepath in data.items():
-            self.addProgram(filepath, update=False, label_name=label_name)
+        for label_name, data in data.items():
+            filepath, date_added = data
+            self.addProgram(filepath, update=False, label_name=label_name, time_added=date_added)
 
         self.updateList()
 
-    def addProgram(self, filepath, update=True, label_name=None):
+    def addProgram(self, filepath, update=True, label_name=None, time_added=None):
         filename = os.path.basename(filepath)
         if not label_name:
             labelname = os.path.splitext(filename)[0].capitalize()
         else:
             labelname = label_name
-        item = AppItem(self, filepath, filename, labelname)
+        item = AppItem(self, filepath, filename, labelname, time_added)
         self.programs[labelname] = item
         if update:
             self.updateList()
@@ -110,7 +122,7 @@ class AppManager:
             return labelname
 
 class AppItem:
-    def __init__(self, manager, filepath, filename, labelname) -> None:
+    def __init__(self, manager, filepath, filename, labelname, time_added) -> None:
         self.manager = manager
         self.filepath = filepath
         self.filename = filename
@@ -118,6 +130,10 @@ class AppItem:
         self.suffix = ""
         self.running = False
         self.p = None
+        if time_added:
+            self.time_added = time_added
+        else:
+            self.time_added = int(time.time())
 
     def run(self):
         threading.Thread(

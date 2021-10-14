@@ -52,7 +52,7 @@ class LeftFrame(Frame):
 
         self.font1 = font.Font(self, size=15)
         
-        self.sort_btn = Button(self, text="Sort A-Z", command=self.changeSort)
+        self.sort_btn = Button(self, text="Sorted A-Z", command=self.changeSort)
         self.app_list = tk.Listbox(self, width=20, height=15, font=self.font1)
         self.app_scroll = Scrollbar(self, 
             orient="vertical", 
@@ -83,11 +83,15 @@ class LeftFrame(Frame):
     def changeSort(self):
         if self.currentSort == "a-z":
             self.currentSort = "z-a"
-            self.sort_btn["text"] = "Sort Z-A"
+            self.sort_btn["text"] = "Sorted Z-A"
             self.parent.app.gui_changeSort("z-a")
         elif self.currentSort == "z-a":
+            self.currentSort = "date"
+            self.sort_btn["text"] = "Sorted by Date Added"
+            self.parent.app.gui_changeSort("date")
+        elif self.currentSort == "date":
             self.currentSort = "a-z"
-            self.sort_btn["text"] = "Sort A-Z"
+            self.sort_btn["text"] = "Sorted A-Z"
             self.parent.app.gui_changeSort("a-z")
 
 class RightFrame(Frame):
