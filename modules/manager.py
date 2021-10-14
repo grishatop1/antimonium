@@ -1,4 +1,7 @@
 import os
+import time
+import threading
+import subprocess as sub
 
 class AppManager:
     def __init__(self, app) -> None:
@@ -42,9 +45,29 @@ class AppManager:
         self.updateList()
         self.saveToCache()
 
+    def runProgram(self, labelname):
+        self.programs[labelname].run()
+
 class AppItem:
     def __init__(self, manager, filepath, filename, labelname) -> None:
         self.manager = manager
         self.filepath = filepath
         self.filename = filename
         self.labelname = labelname
+        self.suffix = ""
+
+    def run(self):
+        threading.Thread(
+            target=self.runThread,
+            daemon=True
+        ).start()
+
+    def runThread(self):
+        p = sub.Popen([self.filepath], stdout=sub.PIPE, stderr=sub.PIPE)
+        while True:
+            poll = p.poll()
+            if poll is None:
+                break
+            else:
+                time.sleep(0.2)
+        p.wait()

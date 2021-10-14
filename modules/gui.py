@@ -109,9 +109,14 @@ class InfoFrame(LabelFrame):
 class StartFrame(Frame):
     def __init__(self, parent, *args, **kwargs):
         Frame.__init__(self, parent, *args, **kwargs)
+        self.parent = parent
 
         self.close_check = Checkbutton(self, text="Close antimonium")
-        self.start_btn = Button(self, text="START", width=30)
+        self.start_btn = Button(self, text="START", width=30, command=self.runItem)
 
         self.close_check.grid(row=0, column=0, sticky="w", pady=5)
         self.start_btn.grid(row=1, column=0, sticky="ew", ipady=5)
+
+    def runItem(self):
+        labelname = self.parent.parent.left_frame.getSelectedLabelname()
+        self.parent.parent.app.gui_runProgram(labelname)
