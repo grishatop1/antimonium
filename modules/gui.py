@@ -81,8 +81,8 @@ class OptionsFrame(Frame):
         self.grid_rowconfigure(0, minsize=31)
 
         self.add_btn = Button(self, text="Add a program", width=25, command=self.openFile)
-        self.rename_btn = Button(self, text="Rename")
-        self.remove_btn = Button(self, text="Remove", command=self.removeItem)
+        self.rename_btn = Button(self, text="Rename selected")
+        self.remove_btn = Button(self, text="Remove selected", command=self.removeItem)
 
         self.add_btn.grid(row=1, column=0, sticky="ew", pady=1)
         self.rename_btn.grid(row=2, column=0, sticky="ew", pady=1)
