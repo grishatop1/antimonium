@@ -24,7 +24,7 @@ class GUI(tk.Tk):
         self.help_menu = tk.Menu(self.menu, tearoff=0)
         self.help_menu.add_command(label="About",command=self.about,underline=0)
         self.help_menu.add_command(label="License",command=self.license,underline=0)
-        self.menu.add_cascade(label="List", menu=self.list_menu, underline=0)
+        self.menu.add_cascade(label="File", menu=self.list_menu, underline=0)
         self.menu.add_cascade(label="Help", menu=self.help_menu, underline=0)
         self.config(menu=self.menu)
 
