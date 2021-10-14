@@ -54,7 +54,9 @@ class LeftFrame(Frame):
         self.app_list.insert("end", *items)
 
     def getSelectedLabelname(self):
-        return self.app_list.get(self.app_list.curselection())
+        try:
+            return self.app_list.get(self.app_list.curselection())
+        except: return
 
     def onSelect(self, event=None):
         labelname = self.getSelectedLabelname()
@@ -94,8 +96,8 @@ class OptionsFrame(Frame):
             self.parent.parent.app.gui_addProgram(filepath)
 
     def removeItem(self):
-        labelname = self.parent.parent.left_frame.getSelectedLabelname()
-        self.parent.parent.app.gui_removeProgram(labelname)
+        if (labelname := self.parent.parent.left_frame.getSelectedLabelname()):
+            self.parent.parent.app.gui_removeProgram(labelname)
 
 class InfoFrame(LabelFrame):
     def __init__(self, parent, *args, **kwargs):
@@ -128,5 +130,5 @@ class StartFrame(Frame):
         self.start_btn.grid(row=1, column=0, sticky="ew", ipady=5)
 
     def runItem(self):
-        labelname = self.parent.parent.left_frame.getSelectedLabelname()
-        self.parent.parent.app.gui_runProgram(labelname)
+        if (labelname := self.parent.parent.left_frame.getSelectedLabelname()):
+            self.parent.parent.app.gui_runProgram(labelname)
