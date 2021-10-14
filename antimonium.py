@@ -16,6 +16,9 @@ class Application:
     def gui_addProgram(self, filepath):
         self.manager.addProgram(filepath)
 
+    def gui_removeProgram(self, labelname):
+        self.manager.removeProgram(labelname)
+
 if __name__ == "__main__":
     app = Application()
     app.run()

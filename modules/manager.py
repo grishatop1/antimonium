@@ -27,7 +27,6 @@ class AppManager:
     def loadFromCache(self):
         data = self.app.cache.read("apps")
         for label_name, filepath in data.items():
-            print(filepath)
             self.addProgram(filepath)
 
     def addProgram(self, filepath):
@@ -35,6 +34,11 @@ class AppManager:
         labelname = os.path.splitext(filename)[0].capitalize()
         item = AppItem(self, filepath, filename, labelname)
         self.programs[labelname] = item
+        self.updateList()
+        self.saveToCache()
+
+    def removeProgram(self, labelname):
+        del self.programs[labelname]
         self.updateList()
         self.saveToCache()
 

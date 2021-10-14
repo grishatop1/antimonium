@@ -52,6 +52,9 @@ class LeftFrame(Frame):
         self.app_list.delete(0, "end")
         self.app_list.insert("end", *items)
 
+    def getSelectedLabelname(self):
+        return self.app_list.get(self.app_list.curselection())
+
 class RightFrame(Frame):
     def __init__(self, parent, *args, **kwargs):
         Frame.__init__(self, parent, *args, **kwargs)
@@ -74,7 +77,7 @@ class OptionsFrame(Frame):
 
         self.add_btn = Button(self, text="Add a program", width=25, command=self.openFile)
         self.rename_btn = Button(self, text="Rename")
-        self.remove_btn = Button(self, text="Remove")
+        self.remove_btn = Button(self, text="Remove", command=self.removeItem)
 
         self.add_btn.grid(row=1, column=0, sticky="ew", pady=1)
         self.rename_btn.grid(row=2, column=0, sticky="ew", pady=1)
@@ -84,6 +87,10 @@ class OptionsFrame(Frame):
         filepath = askopenfilename(filetypes=(("Executables", "*.exe"),))
         if filepath:
             self.parent.parent.app.gui_addProgram(filepath)
+
+    def removeItem(self):
+        labelname = self.parent.parent.left_frame.getSelectedLabelname()
+        self.parent.parent.app.gui_removeProgram(labelname)
 
 class InfoFrame(LabelFrame):
     def __init__(self, parent, *args, **kwargs):
