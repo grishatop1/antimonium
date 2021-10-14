@@ -27,8 +27,6 @@ class GUI(tk.Tk):
         self.menu.add_cascade(label="Help", menu=self.help_menu, underline=0)
         self.config(menu=self.menu)
 
-        self.bind("<Button-1>", self.unfocus)
-
         self.left_frame = LeftFrame(self)
         self.frame_separator = Separator(self, orient="vertical")
         self.right_frame = RightFrame(self)
@@ -36,9 +34,6 @@ class GUI(tk.Tk):
         self.left_frame.grid(row=0, column=0, padx=3, pady=3, sticky="ns")
         self.frame_separator.grid(row=0, column=1, padx=3, pady=3, sticky="ns")
         self.right_frame.grid(row=0, column=2, padx=3, pady=3, sticky="ns")
-
-    def unfocus(self, event=None):
-        self.focus()
     
     def about(*args):
         messagebox.showinfo(title="About",message="about...")
@@ -78,7 +73,8 @@ class LeftFrame(Frame):
 
     def onSelect(self, event=None):
         labelname = self.getSelectedLabelname()
-        self.parent.app.gui_updateInfo(labelname)
+        if labelname:
+            self.parent.app.gui_updateInfo(labelname)
 
 class RightFrame(Frame):
     def __init__(self, parent, *args, **kwargs):
@@ -101,7 +97,7 @@ class OptionsFrame(Frame):
         self.grid_rowconfigure(0, minsize=31)
 
         self.add_btn = Button(self, text="Add a program", width=25, command=self.openFile)
-        self.rename_btn = Button(self, text="Rename selected")
+        self.rename_btn = Button(self, text="Rename selected", command=self.addRenameEntry)
         self.remove_btn = Button(self, text="Remove selected", command=self.removeItem)
 
         self.add_btn.grid(row=1, column=0, sticky="ew", pady=1)
@@ -112,6 +108,40 @@ class OptionsFrame(Frame):
         filepath = askopenfilename(filetypes=(("Executables", "*.exe"),))
         if filepath:
             self.parent.parent.app.gui_addProgram(filepath)
+
+    def addRenameEntry(self):
+        if not (labelname := self.parent.parent.left_frame.getSelectedLabelname()):
+            return
+        
+        label = self.parent.parent.app.manager.removeSuffix(labelname)
+        self.rename_btn["text"] = f"Renaming - {label}"
+        self.rename_btn["state"] = "disabled"
+        self.remove_btn.grid_forget()
+        self.rename_entry = Entry(self)
+        self.rename_entry.bind("<Return>", lambda event: self.renameItem(label))
+        self.rename_entry.insert(0, label)
+        self.rename_entry.focus()
+        self.rename_entry.selection_range(0, "end")
+        self.rename_cancel = Button(self, text="Cancel", style='danger.TButton', command=self.cancelRename)
+        self.rename_entry.grid(row=3, column=0, sticky="ew", pady=1)
+        self.rename_cancel.grid(row=4, column=0, sticky="ew", pady=1)
+        self.remove_btn.grid(row=5, column=0, sticky="ew", pady=1)
+
+    def renameItem(self, old_label):
+        new_label = self.rename_entry.get()
+        if new_label and not " (running)" in new_label:
+            self.parent.parent.app.gui_renameProgram(new_label, old_label)
+            self.cancelRename()
+
+    def cancelRename(self):
+        self.remove_btn.grid_forget()
+        self.rename_entry.destroy()
+        self.rename_cancel.destroy()
+        self.remove_btn.grid(row=3, column=0, sticky="ew", pady=1)
+        self.rename_btn.config(
+            text="Rename selected",
+            state="normal"
+        )
 
     def removeItem(self):
         if (labelname := self.parent.parent.left_frame.getSelectedLabelname()):
@@ -141,7 +171,7 @@ class StartFrame(Frame):
         Frame.__init__(self, parent, *args, **kwargs)
         self.parent = parent
 
-        self.close_check = Checkbutton(self, text="Close antimonium")
+        self.close_check = Checkbutton(self, text="Close antimonium on launch")
         self.start_btn = Button(self, text="START", width=35, command=self.runItem)
 
         self.close_check.grid(row=0, column=0, sticky="w", pady=5)
@@ -170,3 +200,29 @@ class StartFrame(Frame):
             command=self.runItem,
             style='primary.TButton'
         )
+
+class PlaceholderEntry(Entry):
+    def __init__(self, container,placeholder,placeholder_style,*args, **kwargs):
+        super().__init__(container, *args, **kwargs)
+        self.placeholder = placeholder
+
+        self.field_style = kwargs.pop("style", "TEntry")
+        self.placeholder_style=kwargs.pop("placeholder_style",self.field_style)
+        self["style"] = self.placeholder_style
+
+        self.insert("0", self.placeholder)
+        self["foreground"] = "gray"
+        self.bind("<FocusIn>", self._clear_placeholder)
+        self.bind("<FocusOut>", self._add_placeholder)
+
+    def _clear_placeholder(self, e):
+        if self["style"] == self.placeholder_style:
+            self.delete("0", "end")
+            self["style"] = self.field_style
+            self["foreground"] = "black"
+
+    def _add_placeholder(self, e):
+        if not self.get():
+            self.insert("0", self.placeholder)
+            self["style"] = self.placeholder_style
+            self["foreground"] = "gray"

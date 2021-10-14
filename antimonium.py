@@ -16,6 +16,9 @@ class Application:
     def gui_addProgram(self, filepath):
         self.manager.addProgram(filepath)
 
+    def gui_renameProgram(self, new, old):
+        self.manager.renameProgram(new, old)
+
     def gui_removeProgram(self, labelname):
         self.manager.removeProgram(labelname)
     

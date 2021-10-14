@@ -31,15 +31,29 @@ class AppManager:
     def loadFromCache(self):
         data = self.app.cache.read("apps")
         for label_name, filepath in data.items():
-            self.addProgram(filepath)
+            self.addProgram(filepath, update=False, label_name=label_name)
 
-    def addProgram(self, filepath):
+        self.updateList()
+
+    def addProgram(self, filepath, update=True, label_name=None):
         filename = os.path.basename(filepath)
-        labelname = os.path.splitext(filename)[0].capitalize()
+        if not label_name:
+            labelname = os.path.splitext(filename)[0].capitalize()
+        else:
+            labelname = label_name
         item = AppItem(self, filepath, filename, labelname)
         self.programs[labelname] = item
-        self.updateList()
-        self.saveToCache()
+        if update:
+            self.updateList()
+            self.saveToCache()
+
+    def renameProgram(self, new, old):
+        try:
+            self.programs[new] = self.programs.pop(old)
+            self.programs[new].labelname = new
+            self.updateList()
+            self.saveToCache()
+        except: pass
 
     def removeProgram(self, labelname):
         label = self.removeSuffix(labelname)
