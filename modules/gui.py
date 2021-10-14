@@ -37,9 +37,16 @@ class LeftFrame(Frame):
         
         self.sort_btn = Button(self, text="Sort A-Z")
         self.app_list = tk.Listbox(self, width=18, height=15, font=self.font1)
+        self.app_scroll = Scrollbar(self, 
+            orient="vertical", 
+            command=self.app_list.yview
+        )
 
         self.sort_btn.grid(row=0, column=0, pady=(1,2))
         self.app_list.grid(row=1, column=0)
+        self.app_scroll.grid(row=1, column=1, sticky="ns")
+
+        self.app_list.config(yscrollcommand=self.app_scroll.set)
 
     def updateList(self, items):
         self.app_list.delete(0, "end")
