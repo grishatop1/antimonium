@@ -22,11 +22,20 @@ class Application:
     def gui_runProgram(self, labelname):
         self.manager.runProgram(labelname)
 
+    def gui_stopProgram(self, labelname):
+        self.manager.stopProgram(labelname)
+
     def gui_updateInfo(self, labelname):
         self.manager.updateFileInfo(labelname)
 
     def updateInfo(self, filepath, size, creation):
         self.gui.right_frame.info_frame.setInfo(filepath, size, creation)
+
+    def updateStartBtn(self, running):
+        if running:
+            self.gui.right_frame.start_frame.setRunning()
+        else:
+            self.gui.right_frame.start_frame.setRun()
 
 if __name__ == "__main__":
     app = Application()

@@ -150,3 +150,21 @@ class StartFrame(Frame):
     def runItem(self):
         if (labelname := self.parent.parent.left_frame.getSelectedLabelname()):
             self.parent.parent.app.gui_runProgram(labelname)
+            self.setRunning()
+
+    def stopItem(self):
+        if (labelname := self.parent.parent.left_frame.getSelectedLabelname()):
+            self.parent.parent.app.gui_stopProgram(labelname)
+            self.setRun()
+
+    def setRunning(self):
+        self.start_btn.config(
+            text="Stop",
+            command=self.stopItem
+        )
+
+    def setRun(self):
+        self.start_btn.config(
+            text="START",
+            command=self.runItem
+        )

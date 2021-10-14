@@ -53,10 +53,16 @@ class AppManager:
         self.programs[label].run()
         self.updateList()
 
+    def stopProgram(self, labelname):
+        label = self.removeSuffix(labelname)
+        self.programs[label].stop()
+
     def updateFileInfo(self, labelname):
         label = self.removeSuffix(labelname)
-        filepath, size, creation = self.programs[label].getInfo()
+        item = self.programs[label]
+        filepath, size, creation = item.getInfo()
         self.app.updateInfo(filepath, size, creation)
+        self.app.updateStartBtn(item.running)
 
     def removeSuffix(self, labelname):
         if " (running)" in labelname:
@@ -73,6 +79,7 @@ class AppItem:
         self.labelname = labelname
         self.suffix = ""
         self.running = False
+        self.p = None
 
     def run(self):
         threading.Thread(
@@ -80,15 +87,21 @@ class AppItem:
             daemon=True
         ).start()
 
+    def stop(self):
+        if self.running:
+            self.running = False
+            self.p.terminate()
+    
     def runThread(self):
-        p = sub.Popen([self.filepath], stdout=sub.PIPE, stderr=sub.PIPE)
+        self.p = sub.Popen([self.filepath], stdout=sub.PIPE, stderr=sub.PIPE)
         while True:
-            poll = p.poll()
+            poll = self.p.poll()
             if poll is None:
                 break
             else:
                 time.sleep(0.2)
-        p.wait()
+        self.running = True
+        self.p.wait()
         self.suffix = ""
         self.manager.updateList()
 
