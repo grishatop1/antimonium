@@ -51,10 +51,10 @@ class LeftFrame(Frame):
         Frame.__init__(self, parent, *args, **kwargs)
         self.parent = parent
 
-        self.font1 = font.Font(self, size=18)
+        self.font1 = font.Font(self, size=15)
         
         self.sort_btn = Button(self, text="Sort A-Z")
-        self.app_list = tk.Listbox(self, width=18, height=15, font=self.font1)
+        self.app_list = tk.Listbox(self, width=20, height=15, font=self.font1)
         self.app_scroll = Scrollbar(self, 
             orient="vertical", 
             command=self.app_list.yview
