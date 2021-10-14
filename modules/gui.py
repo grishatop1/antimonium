@@ -1,5 +1,6 @@
 import tkinter as tk
 from tkinter import font
+from tkinter import messagebox
 from tkinter.ttk import *
 from tkinter.filedialog import askopenfilename
 
@@ -15,6 +16,17 @@ class GUI(tk.Tk):
         self.title("Antimonium")
         self.resizable(False, False)
 
+        self.menu = tk.Menu(self)
+        self.list_menu = tk.Menu(self.menu, tearoff=0)
+        self.list_menu.add_command(label="Import list...",underline=0)
+        self.list_menu.add_command(label="Export list...",underline=0)
+        self.help_menu = tk.Menu(self.menu, tearoff=0)
+        self.help_menu.add_command(label="About",command=self.about,underline=0)
+        self.help_menu.add_command(label="License",command=self.license,underline=0)
+        self.menu.add_cascade(label="List", menu=self.list_menu, underline=0)
+        self.menu.add_cascade(label="Help", menu=self.help_menu, underline=0)
+        self.config(menu=self.menu)
+
         self.bind("<Button-1>", self.unfocus)
 
         self.left_frame = LeftFrame(self)
@@ -27,6 +39,12 @@ class GUI(tk.Tk):
 
     def unfocus(self, event=None):
         self.focus()
+    
+    def about(*args):
+        messagebox.showinfo(title="About",message="about...")
+
+    def license(*args):
+        messagebox.showinfo(title="License",message="license goes here...")
 
 class LeftFrame(Frame):
     def __init__(self, parent, *args, **kwargs):
