@@ -1,9 +1,9 @@
-from tkinter import *
+import tkinter as tk
 from tkinter.ttk import *
 
 from ttkbootstrap import Style
 
-class GUI(Tk):
+class GUI(tk.Tk):
     def __init__(self, app) -> None:
         super().__init__("Antimonium")
         self.app = app
@@ -26,7 +26,7 @@ class LeftFrame(Frame):
         Frame.__init__(self, parent, *args, **kwargs)
         
         self.sort_btn = Button(self, text="Sort A-Z")
-        self.app_list = Listbox(self, width=35, height=25)
+        self.app_list = tk.Listbox(self, width=35, height=25)
 
         self.sort_btn.grid(row=0, column=0, pady=(1,2))
         self.app_list.grid(row=1, column=0)
