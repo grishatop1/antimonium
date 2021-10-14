@@ -65,9 +65,11 @@ class AppManager:
     def runProgram(self, labelname, closeAnti):
         label = self.removeSuffix(labelname)
         if closeAnti:
+            self.app.cache.write("closeOnLaunch", True)
             self.programs[label].runAndBye()
             sys.exit()
         else:
+            self.app.cache.write("closeOnLaunch", False)
             self.programs[label].suffix = " (running)"
             self.programs[label].run()
             self.updateList()

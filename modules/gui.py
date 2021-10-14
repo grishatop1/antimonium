@@ -3,7 +3,6 @@ from tkinter import font
 from tkinter import messagebox
 from tkinter.ttk import *
 from tkinter.filedialog import askopenfilename
-from typing_extensions import IntVar
 
 from ttkbootstrap import Style
 
@@ -173,6 +172,7 @@ class StartFrame(Frame):
         self.parent = parent
 
         self.close_var = tk.IntVar()
+        self.close_var.set(1 if self.parent.parent.app.cache.read("closeOnLaunch") else 0)
         self.close_check = Checkbutton(self, text="Close antimonium on launch", variable=self.close_var)
         self.start_btn = Button(self, text="START", width=35, command=self.runItem)
 
