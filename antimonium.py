@@ -22,8 +22,8 @@ class Application:
     def gui_removeProgram(self, labelname):
         self.manager.removeProgram(labelname)
     
-    def gui_runProgram(self, labelname):
-        self.manager.runProgram(labelname)
+    def gui_runProgram(self, labelname, closeAnti):
+        self.manager.runProgram(labelname, closeAnti)
 
     def gui_stopProgram(self, labelname):
         self.manager.stopProgram(labelname)

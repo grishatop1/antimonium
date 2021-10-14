@@ -1,4 +1,5 @@
 import os
+import sys
 import time
 import threading
 import datetime
@@ -61,11 +62,15 @@ class AppManager:
         self.updateList()
         self.saveToCache()
 
-    def runProgram(self, labelname):
+    def runProgram(self, labelname, closeAnti):
         label = self.removeSuffix(labelname)
-        self.programs[label].suffix = " (running)"
-        self.programs[label].run()
-        self.updateList()
+        if closeAnti:
+            self.programs[label].runAndBye()
+            sys.exit()
+        else:
+            self.programs[label].suffix = " (running)"
+            self.programs[label].run()
+            self.updateList()
 
     def stopProgram(self, labelname):
         label = self.removeSuffix(labelname)
@@ -100,6 +105,9 @@ class AppItem:
             target=self.runThread,
             daemon=True
         ).start()
+
+    def runAndBye(self):
+        os.startfile(self.filepath)
 
     def stop(self):
         if self.running:
