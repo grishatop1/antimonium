@@ -10,7 +10,10 @@ class AppManager:
         self.app = app
         self.list = self.app.gui.left_frame
         self.programs = {}
+        self.currentSort = "a-z"
+        
         self.loadFromCache()
+       
 
     def updateList(self):
         app_items = list(self.programs.values())
@@ -18,9 +21,21 @@ class AppManager:
         for app_item in app_items:
             app_list.append(app_item.labelname + app_item.suffix)
 
+        app_sort = self.sortList(app_list)
+
         self.list.updateList(
-            app_list
+            app_sort
         )
+
+    def changeSort(self, _sort):
+        self.currentSort = _sort
+        self.updateList()
+
+    def sortList(self, app_list):
+        if self.currentSort == "a-z":
+            return sorted(app_list)
+        elif self.currentSort == "z-a":
+            return sorted(app_list, reverse=True)
 
     def saveToCache(self):
         output = {}
@@ -50,6 +65,8 @@ class AppManager:
 
     def renameProgram(self, new, old):
         try:
+            if new in self.programs:
+                return
             self.programs[new] = self.programs.pop(old)
             self.programs[new].labelname = new
             self.updateList()

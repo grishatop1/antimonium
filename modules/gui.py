@@ -45,10 +45,11 @@ class LeftFrame(Frame):
     def __init__(self, parent, *args, **kwargs):
         Frame.__init__(self, parent, *args, **kwargs)
         self.parent = parent
+        self.currentSort = "a-z"
 
         self.font1 = font.Font(self, size=15)
         
-        self.sort_btn = Button(self, text="Sort A-Z")
+        self.sort_btn = Button(self, text="Sort A-Z", command=self.changeSort)
         self.app_list = tk.Listbox(self, width=20, height=15, font=self.font1)
         self.app_scroll = Scrollbar(self, 
             orient="vertical", 
@@ -75,6 +76,16 @@ class LeftFrame(Frame):
         labelname = self.getSelectedLabelname()
         if labelname:
             self.parent.app.gui_updateInfo(labelname)
+
+    def changeSort(self):
+        if self.currentSort == "a-z":
+            self.currentSort = "z-a"
+            self.sort_btn["text"] = "Sort Z-A"
+            self.parent.app.gui_changeSort("z-a")
+        elif self.currentSort == "z-a":
+            self.currentSort = "a-z"
+            self.sort_btn["text"] = "Sort A-Z"
+            self.parent.app.gui_changeSort("a-z")
 
 class RightFrame(Frame):
     def __init__(self, parent, *args, **kwargs):

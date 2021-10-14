@@ -31,6 +31,9 @@ class Application:
     def gui_updateInfo(self, labelname):
         self.manager.updateFileInfo(labelname)
 
+    def gui_changeSort(self, _sort):
+        self.manager.changeSort(_sort)
+
     def updateInfo(self, filepath, size, creation):
         self.gui.right_frame.info_frame.setInfo(filepath, size, creation)
 
