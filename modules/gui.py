@@ -1,5 +1,7 @@
 import tkinter as tk
+from tkinter import font
 from tkinter.ttk import *
+from tkinter.filedialog import askopenfilename
 
 from ttkbootstrap import Style
 
@@ -13,6 +15,8 @@ class GUI(tk.Tk):
         self.title("Antimonium")
         self.resizable(False, False)
 
+        self.bind("<Button-1>", self.unfocus)
+
         self.left_frame = LeftFrame(self)
         self.frame_separator = Separator(self, orient="vertical")
         self.right_frame = RightFrame(self)
@@ -21,19 +25,30 @@ class GUI(tk.Tk):
         self.frame_separator.grid(row=0, column=1, padx=3, pady=3, sticky="ns")
         self.right_frame.grid(row=0, column=2, padx=3, pady=3, sticky="ns")
 
+    def unfocus(self, event=None):
+        self.focus()
+
 class LeftFrame(Frame):
     def __init__(self, parent, *args, **kwargs):
         Frame.__init__(self, parent, *args, **kwargs)
+        self.parent = parent
+
+        self.font1 = font.Font(self, size=22)
         
         self.sort_btn = Button(self, text="Sort A-Z")
-        self.app_list = tk.Listbox(self, width=35, height=25)
+        self.app_list = tk.Listbox(self, width=15, height=10, font=self.font1)
 
         self.sort_btn.grid(row=0, column=0, pady=(1,2))
         self.app_list.grid(row=1, column=0)
 
+    def updateList(self, items):
+        self.app_list.delete(0, "end")
+        self.app_list.insert("end", *items)
+
 class RightFrame(Frame):
     def __init__(self, parent, *args, **kwargs):
         Frame.__init__(self, parent, *args, **kwargs)
+        self.parent = parent
 
         self.options_frame = OptionsFrame(self)
         self.info_frame = InfoFrame(self)
@@ -46,16 +61,22 @@ class RightFrame(Frame):
 class OptionsFrame(Frame):
     def __init__(self, parent, *args, **kwargs):
         Frame.__init__(self, parent, *args, **kwargs)
+        self.parent = parent
 
         self.grid_rowconfigure(0, minsize=31)
 
-        self.add_btn = Button(self, text="Add a program", width=25)
+        self.add_btn = Button(self, text="Add a program", width=25, command=self.openFile)
         self.rename_btn = Button(self, text="Rename")
         self.remove_btn = Button(self, text="Remove")
 
         self.add_btn.grid(row=1, column=0, sticky="ew", pady=1)
         self.rename_btn.grid(row=2, column=0, sticky="ew", pady=1)
         self.remove_btn.grid(row=3, column=0, sticky="ew", pady=1)
+
+    def openFile(self):
+        filepath = askopenfilename(filetypes=(("Executables", "*.exe"),))
+        if filepath:
+            self.parent.parent.app.gui_addProgram(filepath)
 
 class InfoFrame(LabelFrame):
     def __init__(self, parent, *args, **kwargs):
