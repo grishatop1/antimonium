@@ -20,10 +20,13 @@ class GUI(tk.Tk):
         self.list_menu = tk.Menu(self.menu, tearoff=0)
         self.list_menu.add_command(label="Import list...",underline=0)
         self.list_menu.add_command(label="Export list...",underline=0)
+        self.process_menu = tk.Menu(self.menu, tearoff=0)
+        self.process_menu.add_command(label="Stop all", underline=0)
         self.help_menu = tk.Menu(self.menu, tearoff=0)
         self.help_menu.add_command(label="About",command=self.about,underline=0)
         self.help_menu.add_command(label="License",command=self.license,underline=0)
         self.menu.add_cascade(label="File", menu=self.list_menu, underline=0)
+        self.menu.add_cascade(label="Process", menu=self.process_menu, underline=0)
         self.menu.add_cascade(label="Help", menu=self.help_menu, underline=0)
         self.config(menu=self.menu)
 
