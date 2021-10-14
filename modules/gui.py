@@ -160,11 +160,13 @@ class StartFrame(Frame):
     def setRunning(self):
         self.start_btn.config(
             text="Stop",
-            command=self.stopItem
+            command=self.stopItem,
+            style='warning.TButton'
         )
 
     def setRun(self):
         self.start_btn.config(
             text="START",
-            command=self.runItem
+            command=self.runItem,
+            style='primary.TButton'
         )

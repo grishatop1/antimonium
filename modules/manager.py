@@ -104,6 +104,7 @@ class AppItem:
         self.p.wait()
         self.suffix = ""
         self.manager.updateList()
+        self.manager.app.updateStartBtn(False)
 
     def getInfo(self):
         size = f"{round(os.path.getsize(self.filepath)/1024/1024, 1)}MB" #in MB
