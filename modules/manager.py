@@ -15,7 +15,7 @@ class AppManager:
         app_items = list(self.programs.values())
         app_list = []
         for app_item in app_items:
-            app_list.append(app_item.labelname)
+            app_list.append(app_item.labelname + app_item.suffix)
 
         self.list.updateList(
             app_list
@@ -42,17 +42,28 @@ class AppManager:
         self.saveToCache()
 
     def removeProgram(self, labelname):
-        del self.programs[labelname]
+        label = self.removeSuffix(labelname)
+        del self.programs[label]
         self.updateList()
         self.saveToCache()
 
     def runProgram(self, labelname):
-        self.programs[labelname].run()
+        label = self.removeSuffix(labelname)
+        self.programs[label].suffix = " (running)"
+        self.programs[label].run()
+        self.updateList()
 
     def updateFileInfo(self, labelname):
-        filepath, size, creation = self.programs[labelname].getInfo()
+        label = self.removeSuffix(labelname)
+        filepath, size, creation = self.programs[label].getInfo()
         self.app.updateInfo(filepath, size, creation)
 
+    def removeSuffix(self, labelname):
+        if " (running)" in labelname:
+            label, suffix = labelname.rsplit(" ", 1)
+            return label
+        else:
+            return labelname
 
 class AppItem:
     def __init__(self, manager, filepath, filename, labelname) -> None:
@@ -61,6 +72,7 @@ class AppItem:
         self.filename = filename
         self.labelname = labelname
         self.suffix = ""
+        self.running = False
 
     def run(self):
         threading.Thread(
@@ -77,6 +89,8 @@ class AppItem:
             else:
                 time.sleep(0.2)
         p.wait()
+        self.suffix = ""
+        self.manager.updateList()
 
     def getInfo(self):
         size = f"{round(os.path.getsize(self.filepath)/1024/1024, 1)}MB" #in MB
