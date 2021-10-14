@@ -33,10 +33,10 @@ class LeftFrame(Frame):
         Frame.__init__(self, parent, *args, **kwargs)
         self.parent = parent
 
-        self.font1 = font.Font(self, size=22)
+        self.font1 = font.Font(self, size=18)
         
         self.sort_btn = Button(self, text="Sort A-Z")
-        self.app_list = tk.Listbox(self, width=15, height=10, font=self.font1)
+        self.app_list = tk.Listbox(self, width=18, height=15, font=self.font1)
 
         self.sort_btn.grid(row=0, column=0, pady=(1,2))
         self.app_list.grid(row=1, column=0)
