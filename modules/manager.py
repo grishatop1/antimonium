@@ -102,6 +102,7 @@ class AppItem:
                 time.sleep(0.2)
         self.running = True
         self.p.wait()
+        self.running = False
         self.suffix = ""
         self.manager.updateList()
         self.manager.app.updateStartBtn(False)
