@@ -47,6 +47,7 @@ class LeftFrame(Frame):
         self.app_scroll.grid(row=1, column=1, sticky="ns")
 
         self.app_list.config(yscrollcommand=self.app_scroll.set)
+        self.app_list.bind("<<ListboxSelect>>", self.onSelect)
 
     def updateList(self, items):
         self.app_list.delete(0, "end")
@@ -54,6 +55,10 @@ class LeftFrame(Frame):
 
     def getSelectedLabelname(self):
         return self.app_list.get(self.app_list.curselection())
+
+    def onSelect(self, event=None):
+        labelname = self.getSelectedLabelname()
+        self.parent.app.gui_updateInfo(labelname)
 
 class RightFrame(Frame):
     def __init__(self, parent, *args, **kwargs):
@@ -96,15 +101,20 @@ class InfoFrame(LabelFrame):
     def __init__(self, parent, *args, **kwargs):
         LabelFrame.__init__(self, parent, text="App Info", *args, **kwargs)
 
-        self.info1_label = Label(self, text="info1 - label")
-        self.info2_label = Label(self, text="info2 - label")
-        self.info3_label = Label(self, text="info3 - label")
-        self.info4_label = Label(self, text="info4 - label")
+        self.info1_label = Label(self, text="Path: File not selected.")
+        self.info2_label = Label(self, text="Date created: File not selected.")
+        self.info3_label = Label(self, text="Size: File not selected.")
 
-        self.info1_label.grid(row=0, column=0)
-        self.info2_label.grid(row=1, column=0)
-        self.info3_label.grid(row=2, column=0)
-        self.info4_label.grid(row=3, column=0)
+        self.info1_label.grid(row=0, column=0, sticky="w")
+        self.info2_label.grid(row=1, column=0, sticky="w")
+        self.info3_label.grid(row=2, column=0, sticky="w")
+
+    def setInfo(self, filepath, size, creation):
+        if len(filepath) > 35:
+            filepath = filepath[:33] + "..."
+        self.info1_label["text"] = f"Path: {filepath}"
+        self.info2_label["text"] = f"Date created: {creation}"
+        self.info3_label["text"] = f"Size: {size}"
 
 class StartFrame(Frame):
     def __init__(self, parent, *args, **kwargs):
@@ -112,7 +122,7 @@ class StartFrame(Frame):
         self.parent = parent
 
         self.close_check = Checkbutton(self, text="Close antimonium")
-        self.start_btn = Button(self, text="START", width=30, command=self.runItem)
+        self.start_btn = Button(self, text="START", width=35, command=self.runItem)
 
         self.close_check.grid(row=0, column=0, sticky="w", pady=5)
         self.start_btn.grid(row=1, column=0, sticky="ew", ipady=5)

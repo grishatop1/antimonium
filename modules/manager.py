@@ -1,6 +1,7 @@
 import os
 import time
 import threading
+import datetime
 import subprocess as sub
 
 class AppManager:
@@ -48,6 +49,11 @@ class AppManager:
     def runProgram(self, labelname):
         self.programs[labelname].run()
 
+    def updateFileInfo(self, labelname):
+        filepath, size, creation = self.programs[labelname].getInfo()
+        self.app.updateInfo(filepath, size, creation)
+
+
 class AppItem:
     def __init__(self, manager, filepath, filename, labelname) -> None:
         self.manager = manager
@@ -71,3 +77,13 @@ class AppItem:
             else:
                 time.sleep(0.2)
         p.wait()
+
+    def getInfo(self):
+        size = f"{round(os.path.getsize(self.filepath)/1024/1024, 1)}MB" #in MB
+
+        unix_timestamp = os.path.getctime(self.filepath)
+        timestamp = datetime.datetime.fromtimestamp(unix_timestamp)
+        creation = timestamp.strftime('%Y-%m-%d %H:%M:%S')
+
+        return (self.filepath, size, creation)
+        
