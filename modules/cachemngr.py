@@ -3,7 +3,7 @@ import pickle
 
 class CacheManager:
     def __init__(self):
-        self.appdata = os.getenv('APPDATA').replace("\\", "/")
+        self.appdata = os.path.expanduser('~').replace("\\", "/")
         self.cache_path = self.appdata+"/Antimonium/"
         self.cache_file = self.cache_path+"cache.temp"
         self._checkInitial()

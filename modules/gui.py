@@ -8,7 +8,7 @@ from ttkbootstrap import Style
 
 class GUI(tk.Tk):
     def __init__(self, app) -> None:
-        super().__init__("Antimonium")
+        super().__init__()
         self.app = app
 
         style = Style("darkly")
@@ -123,7 +123,7 @@ class OptionsFrame(Frame):
         self.remove_btn.grid(row=3, column=0, sticky="ew", pady=1)
 
     def openFile(self):
-        filepath = askopenfilename(filetypes=(("Executables", "*.exe"),))
+        filepath = askopenfilename(filetypes=(("Executables", "*"),))
         if filepath:
             self.parent.parent.app.gui_addProgram(filepath)
 
